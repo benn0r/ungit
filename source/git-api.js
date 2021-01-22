@@ -367,7 +367,8 @@ exports.registerApi = (env) => {
         req.body.amend,
         req.body.emptyCommit,
         req.body.message,
-        req.body.files
+        req.body.files,
+        req.body.author
       )
     )
       .then(emitGitDirectoryChanged.bind(null, req.body.path))

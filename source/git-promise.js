@@ -487,7 +487,7 @@ git.applyPatchedDiff = (repoPath, patchedDiff) => {
   }
 };
 
-git.commit = (repoPath, amend, emptyCommit, message, files) => {
+git.commit = (repoPath, amend, emptyCommit, message, files, author) => {
   return new Promise((resolve, reject) => {
     if (message == undefined) {
       reject({ error: 'Must specify commit message' });
@@ -557,7 +557,7 @@ git.commit = (repoPath, amend, emptyCommit, message, files) => {
       const allowedEmptyFlag = emptyCommit || amend ? '--allow-empty' : '';
       const isGPGSign = config.isForceGPGSign ? '-S' : '';
       return git(
-        ['commit', ammendFlag, allowedEmptyFlag, isGPGSign, '--file=-'],
+        ['commit', ammendFlag, allowedEmptyFlag, isGPGSign, '--file=-', '--author="' + author + '"'],
         repoPath,
         null,
         null,

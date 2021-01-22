@@ -24,6 +24,30 @@ class StagingViewModel {
     this.commitMessageTitle.subscribe((value) => {
       this.commitMessageTitleCount(value.length);
     });
+
+    this.commitMessageAuthorCount = ko.observable(0);
+    this.commitMessageAuthor = ko.observable();
+    this.commitMessageAuthor.subscribe((value) => {
+      this.commitMessageAuthorCount(value.length);
+    });
+
+    function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+    this.commitMessageAuthor(getCookie('ungit_author'));
+
     this.commitMessageBody = ko.observable();
     this.wordWrap = components.create('textdiff.wordwrap');
     this.textDiffType = components.create('textdiff.type');
@@ -85,6 +109,9 @@ class StagingViewModel {
         }
         if (!this.commitMessageTitle()) {
           return 'Provide a title';
+        }
+        if (!this.commitMessageAuthor()) {
+          return 'Provide an author';
         }
 
         if (this.textDiffType.value() === 'sidebysidediff') {
@@ -268,10 +295,19 @@ class StagingViewModel {
     let commitMessage = this.commitMessageTitle();
     if (this.commitMessageBody()) commitMessage += `\n\n${this.commitMessageBody()}`;
 
+    function setCookie(cname, cvalue, exdays) {
+      var d = new Date();
+      d.setTime(d.getTime() + (exdays*24*60*60*1000));
+      var expires = "expires="+ d.toUTCString();
+      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+    setCookie('ungit_author', this.commitMessageAuthor(), 2000);
+
     this.server
       .postPromise('/commit', {
         path: this.repoPath(),
         message: commitMessage,
+        author: this.commitMessageAuthor(),
         files,
         amend: this.amend(),
         emptyCommit: this.emptyCommit(),

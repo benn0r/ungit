@@ -25,6 +25,13 @@
           aria-label="Commit message title"
           data-bind="value: commitMessageTitle, valueUpdate: 'afterkeydown', enable: !inRebase(), event: {keypress: onEnter}"
         />
+        <input
+          class="form-control"
+          type="text"
+          placeholder="Author (required)"
+          aria-label="Author"
+          data-bind="value: commitMessageAuthor, valueUpdate: 'afterkeydown', enable: !inRebase(), event: {keypress: onEnter}"
+        />
         <textarea
           class="form-control commit-body"
           rows="2"
