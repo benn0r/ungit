@@ -556,8 +556,9 @@ git.commit = (repoPath, amend, emptyCommit, message, files, author) => {
       const ammendFlag = amend ? '--amend' : '';
       const allowedEmptyFlag = emptyCommit || amend ? '--allow-empty' : '';
       const isGPGSign = config.isForceGPGSign ? '-S' : '';
+      const authorPart = author ? '--author="' + author + '"' : '';
       return git(
-        ['commit', ammendFlag, allowedEmptyFlag, isGPGSign, '--file=-', '--author="' + author + '"'],
+        ['commit', ammendFlag, allowedEmptyFlag, isGPGSign, '--file=-', authorPart],
         repoPath,
         null,
         null,
